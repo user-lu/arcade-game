@@ -3,7 +3,7 @@ let blockSize = 25;
 let row = 20;
 let column = 20;
 let board;
-let context; //***LOOK***
+let context;
 
 //Snake variables
 let snakeX = blockSize * 5;
@@ -22,6 +22,7 @@ let foodY;
 
 let gameOver = false;
 
+//When page loads, function fires
 window.onload = function() {
     board = document.getElementById("board");
     board.height = row * blockSize;
@@ -29,7 +30,9 @@ window.onload = function() {
     context = board.getContext("2d");
 
     placeFood();
+    
     document.addEventListener("keyup", changeDirection);
+    
     setInterval(gameBoard, 1000/10); 
 }
 
@@ -44,14 +47,16 @@ function gameBoard() {
     context.fillRect(0, 0, board.width, board.height);
     
     //Food color
-    context.fillStyle = "red";
+    context.fillStyle = "white";
     context.fillRect(foodX, foodY, blockSize, blockSize);
 
+    //Checks to see if snake consumes food
     if(snakeX == foodX && snakeY == foodY) {
         snakeBody.push([foodX, foodY]);
         placeFood();
     }
 
+    //Helps move snake body accordingly
     for(let i = snakeBody.length - 1; i > 0; i--) {
         snakeBody[i] = snakeBody[i - 1];
     }
@@ -66,11 +71,12 @@ function gameBoard() {
     snakeY += speedY * blockSize;
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
 
+    //Draws food eaten by the snake
     for(let i = 0; i < snakeBody.length; i++) {
         context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);      
     }
 
-    //Game over conditions
+    //Game over conditions (1st is out of bounds/ 2nd is collision w/self)
     if( snakeX < 0 || snakeX > column * blockSize || snakeY < 0 || snakeY > row * blockSize) {
         gameOver = true;
         alert("GAME OVER");
@@ -85,6 +91,7 @@ function gameBoard() {
 }
 
 //Reads user input of which arrow key is pressed
+//Also makes sure snake can't travel in the opposite direction
 function changeDirection(e) {
     if(e.code == "ArrowUp" && speedY != 1) {
         speedX = 0;
@@ -109,3 +116,4 @@ function placeFood() {
     foodX = Math.floor(Math.random() * column) * blockSize;
     foodY = Math.floor(Math.random() * column) * blockSize;    
 }
+
